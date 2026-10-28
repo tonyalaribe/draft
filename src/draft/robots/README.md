@@ -26,6 +26,7 @@ an installed wheel.
 | robot | what it is |
 |---|---|
 | `humanoid` | 29 DoF. The §IV-F twin targets (Unitree G1, H2) are built from this tree. |
+| `excavator` | 8 DoF. Remote-operated wheeled micro-excavator; see `experiments/excavator/`. |
 | `quadruped` | 12 DoF. The base for Go2 and B2, and for the three designs §V trains — Cheetah, Bear and Giraffe, each an override file in `experiments/quadruped_variants/`. |
 
 Both state a FIXED tree and vary only by parameters. Variable topology — a part

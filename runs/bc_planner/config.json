@@ -1,0 +1,1 @@
+{"arm_only": true, "out": "../../runs/bc_planner", "demos": 24, "bc_epochs": 60, "steps": 0.0, "envs": 2, "full": false, "eval": null}

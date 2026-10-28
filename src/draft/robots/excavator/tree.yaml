@@ -1,0 +1,107 @@
+# Skid-steer undercarriage → slew → boom → stick → bucket.
+# Zero pose: arm fully extended level forward. Wheels: fl mirrored to fr, rl to rr.
+name: torso_link
+type: root
+color: ${torso_color}
+pos: [0, 0, "${wheel_r}"]
+sites: [{name: imu, pos: [0, 0, 0]}]
+sensors:
+  - {type: gyro, name: imu_ang_vel, site: imu}
+  - {type: velocimeter, name: imu_lin_vel, site: imu}
+  - {type: accelerometer, name: imu_lin_acc, site: imu}
+  - {type: subtreeangmom, name: root_angmom, body: torso_link}
+
+children:
+  - name: fl_wheel_motor_link
+    type: basic
+    pos: ["${wheelbase / 2}", "${chassis_ly / 2}", 0]
+    geometry: {link_l: 0, motor_axis: y, motor_class: "${wheel_mot}", motor_for: wheel,
+               motor_shift: [0, "${-wheel_motor_L / 2}", 0]}
+    children:
+      - name: fl_wheel
+        type: geom
+        pos: [0, "${wheel_w / 2 + 0.01}", 0]
+        joint: {name: fl_wheel, axis: y, range: "${wheel_range}", motor_class: "${wheel_mot}"}
+        geometry: {shape: cylinder, r: "${wheel_r}", l: "${wheel_w}", axis: y, rho: "${wheel_rho}",
+                   color: "${tyre_color}", role: wheel}
+  - {name: fr_wheel_motor_link, mirror_of: fl_wheel_motor_link, mirror_axis: y}
+  - name: rl_wheel_motor_link
+    type: basic
+    pos: ["${-wheelbase / 2}", "${chassis_ly / 2}", 0]
+    geometry: {link_l: 0, motor_axis: y, motor_class: "${wheel_mot}", motor_for: wheel,
+               motor_shift: [0, "${-wheel_motor_L / 2}", 0]}
+    children:
+      - name: rl_wheel
+        type: geom
+        pos: [0, "${wheel_w / 2 + 0.01}", 0]
+        joint: {name: rl_wheel, axis: y, range: "${wheel_range}", motor_class: "${wheel_mot}"}
+        geometry: {shape: cylinder, r: "${wheel_r}", l: "${wheel_w}", axis: y, rho: "${wheel_rho}",
+                   color: "${tyre_color}", role: wheel}
+  - {name: rr_wheel_motor_link, mirror_of: rl_wheel_motor_link, mirror_axis: y}
+
+  # Slew bearing drive, recessed in the chassis top.
+  - name: slew_motor_link
+    type: basic
+    pos: [0, 0, "${chassis_z + chassis_lz / 2 - slew_motor_L / 2}"]
+    geometry: {link_l: 0, motor_axis: z, motor_class: "${slew_mot}", motor_for: slew}
+    children:
+      - name: turret_link
+        type: basic
+        pos: [0, 0, 0]
+        joint: {name: slew, axis: z, range: "${slew_range}", motor_class: "${slew_mot}"}
+        geometry: {link_axis: z, link_l: "${turret_h}", link_r: "${turret_r}", link_rho: "${turret_rho}",
+                   motor_axis: y, motor_class: "${boom_mot}", motor_for: boom}
+        sites:
+          - {name: cam_mast, pos: [0.12, 0, "${turret_h + mast_h}"]}
+          - {name: antenna, pos: [-0.15, 0.15, "${turret_h + mast_h}"]}
+        children:
+          - name: deck
+            type: geom
+            pos: [-0.05, 0, "${deck_base + deck_lz / 2}"]
+            geometry: {shape: box, r: 0.1, lx: "${deck_lx}", ly: "${deck_ly}", lz: "${deck_lz}",
+                       rho: "${deck_rho}", color: "${deck_color}", role: torso}
+          - name: electronics
+            type: geom
+            pos: [0.10, 0.12, "${deck_base + deck_lz + electronics_lz / 2}"]
+            geometry: {shape: box, r: 0.1, lx: "${electronics_lx}", ly: "${electronics_ly}",
+                       lz: "${electronics_lz}", mass: "${electronics_mass}", color: "${box_color}", role: torso}
+          - name: counterweight
+            type: geom
+            pos: ["${-deck_lx / 2 - 0.05 + counterweight_lx / 2}", 0, "${deck_base + deck_lz + counterweight_lz / 2}"]
+            geometry: {shape: box, r: 0.1, lx: "${counterweight_lx}", ly: "${counterweight_ly}",
+                       lz: "${counterweight_lz}", mass: "${counterweight_mass}", color: "${weight_color}", role: torso}
+          - name: mast
+            type: geom
+            pos: [0.12, 0, "${deck_base + deck_lz}"]
+            geometry: {shape: cylinder, r: 0.012, fromto: [0, 0, 0, 0, 0, "${turret_h + mast_h - deck_base - deck_lz}"],
+                       mass: 0.5, color: "${motor_color}"}
+          - name: boom_link
+            type: basic
+            pos: [0, 0, "${turret_h}"]
+            joint: {name: boom, axis: -y, range: "${boom_range}", motor_class: "${boom_mot}"}
+            geometry: {link_axis: x, link_l: "${boom_l}", link_r: "${boom_r}", link_rho: "${boom_rho}",
+                       motor_axis: y, motor_class: "${stick_mot}", motor_for: stick}
+            children:
+              - name: stick_link
+                type: basic
+                pos: ["${boom_l}", 0, 0]
+                joint: {name: stick, axis: y, range: "${stick_range}", motor_class: "${stick_mot}"}
+                geometry: {link_axis: x, link_l: "${stick_l}", link_r: "${stick_r}", link_rho: "${stick_rho}",
+                           motor_axis: y, motor_class: "${bucket_mot}", motor_for: bucket}
+                sites: [{name: cam_bucket, pos: ["${stick_l / 2}", 0, "${-stick_r - 0.02}"]}]
+                children:
+                  - name: bucket_link
+                    type: geom
+                    pos: ["${stick_l}", 0, 0]
+                    joint: {name: bucket, axis: y, range: "${bucket_range}", motor_class: "${bucket_mot}"}
+                    geometry: {shape: box, r: 0.1, lx: 0.08, ly: "${bucket_ly}", lz: 0.04,
+                               mass: 1.0, color: "${bucket_color}", role: hand}
+                    sites:
+                      - {name: bucket_load, pos: ["${bucket_lx / 2 + 0.06}", 0, "${-bucket_lz / 2 - 0.02}"]}
+                      - {name: bucket_teeth, pos: ["${bucket_lx + 0.08}", 0, "${-bucket_lz - 0.02}"]}
+                    children:
+                      - name: bucket_shell
+                        type: geom
+                        pos: ["${bucket_lx / 2 + 0.06}", 0, "${-bucket_lz / 2 - 0.02}"]
+                        geometry: {shape: box, r: 0.1, lx: "${bucket_lx}", ly: "${bucket_ly}", lz: "${bucket_lz}",
+                                   mass: "${bucket_mass - 1.0}", color: "${bucket_color}", role: hand}

@@ -1,0 +1,1 @@
+{"arm_only": true, "out": "../../runs/smoke", "demos": 4, "bc_epochs": 10, "steps": 500000.0, "envs": 16, "full": false, "eval": null}

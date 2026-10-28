@@ -1,0 +1,108 @@
+# Remote-operated electric micro-excavator: skid-steer wheeled undercarriage,
+# slewing upper body (battery, compute, radio, cameras; no cab), boom/stick/bucket arm.
+# Arm actuators are anchored on catalogued harmonic units; the trends charge only
+# the deviation. No measured population covers excavator structure, so members state
+# their radius and an equivalent steel box-section density.
+
+# Arm: boom/stick/bucket (B/K/T), slew (S), wheel hub drives (W).
+B_motor_mode: torque_gear
+_B_motor_catalog: eRob142H-100
+B_motor_effort: 841.0
+B_motor_gear: 100.0
+K_motor_mode: torque_gear
+_K_motor_catalog: eRob110H-100
+K_motor_effort: 369.0
+K_motor_gear: 100.0
+T_motor_mode: torque_gear
+_T_motor_catalog: eRob80H-100
+T_motor_effort: 143.0
+T_motor_gear: 100.0
+S_motor_mode: torque_gear
+_S_motor_catalog: eRob90H-100
+S_motor_effort: 191.0
+S_motor_gear: 100.0
+W_motor_mode: torque_gear
+_W_motor_catalog: AK80-64
+W_motor_effort: 120.0
+W_motor_gear: 64.0
+B_motor_friction: 2.0
+K_motor_friction: 1.0
+T_motor_friction: 0.5
+S_motor_friction: 1.0
+W_motor_friction: 0.2
+B_motor_damping: 1.0
+K_motor_damping: 0.5
+T_motor_damping: 0.2
+S_motor_damping: 0.5
+W_motor_damping: 0.05
+motor_rho: 2700.0
+
+boom_mot: B
+stick_mot: K
+bucket_mot: T
+slew_mot: S
+wheel_mot: W
+
+# Undercarriage (lofted box); battery pack lives here, low for stability.
+chassis_lx: 0.90
+chassis_ly: 0.46
+chassis_lz: 0.18
+chassis_z: 0.03            # box centre above the axle line
+chassis_chamfer: 0.25
+torso_rho: 550.0
+wheel_r: 0.16
+wheel_w: 0.10
+wheel_rho: 900.0           # tyre + rim, equivalent
+wheelbase: 0.64
+
+# Upper structure on the slew bearing.
+turret_h: 0.22
+turret_r: 0.07
+turret_rho: 2000.0
+# Deck underside clears the wheel tops so the upper structure can slew freely.
+deck_base: ${slew_motor_L / 2 + wheel_r - (chassis_z + chassis_lz / 2) + 0.025}
+deck_lx: 0.50
+deck_ly: 0.42
+deck_lz: 0.05
+deck_rho: 1500.0
+electronics_lx: 0.18       # compute, radio, ESCs (forward, under the mast)
+electronics_ly: 0.22
+electronics_lz: 0.12
+electronics_mass: 6.0
+counterweight_lx: 0.14
+counterweight_ly: 0.38
+counterweight_lz: 0.14
+counterweight_mass: 30.0   # tip-over knob; sized by check_reach.py
+mast_h: 0.35
+
+# Arm geometry (joint-to-joint) and steel box-section equivalents.
+boom_l: 0.80
+boom_r: 0.045
+boom_rho: 2400.0
+stick_l: 0.55
+stick_r: 0.035
+stick_rho: 2400.0
+bucket_lx: 0.22
+bucket_ly: 0.28
+bucket_lz: 0.18
+bucket_mass: 6.0
+payload_mass: 10.0         # wet soil, ~6 L heaped; used by check_reach.py
+
+# Ranges (rad). Zero pose: boom and stick level forward = worst-case moment.
+slew_range: [-3.1, 3.1]
+boom_range: [-0.5, 1.2]
+stick_range: [-0.4, 2.6]
+bucket_range: [-1.0, 2.2]
+wheel_range: [-10000, 10000]
+
+structure_overlap_allowed: [slew, wheel, turret_link_link]
+
+link_color: 0.95 0.68 0.10 1.0
+motor_color: 0.20 0.20 0.22 1.0
+mot_detail_color: 0.08 0.08 0.09 1.0
+torso_color: 0.25 0.25 0.27 1.0
+deck_color: 0.95 0.68 0.10 1.0
+tyre_color: 0.05 0.05 0.05 1.0
+bucket_color: 0.30 0.30 0.32 1.0
+weight_color: 0.15 0.15 0.15 1.0
+box_color: 0.12 0.30 0.55 1.0

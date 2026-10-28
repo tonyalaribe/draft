@@ -1,0 +1,1 @@
+{"arm_only": true, "out": "../../runs/arm_v2", "demos": 48, "bc_epochs": 30, "steps": 10000000.0, "envs": 12, "full": false, "eval": null, "episode": 60.0, "init": "../../runs/arm_v1_30s"}

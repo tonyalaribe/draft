@@ -64,7 +64,7 @@ def _total_mass(out: Path) -> float:
 
 def test_every_shipped_robot_is_discoverable():
     """Robots are discovered from their directories."""
-    assert set(available()) == {"humanoid", "quadruped"}
+    assert set(available()) == {"excavator", "humanoid", "quadruped"}
 
 
 @pytest.mark.parametrize("robot", sorted(EXPECTED_MASS_KG))

@@ -1,0 +1,7 @@
+name: torso
+axis: x
+density_param: torso_rho
+chamfer: 0.25
+layers:
+  - {pos: "${-chassis_lx / 2}", lx: "${chassis_ly}", ly: "${chassis_lz}", cy: "${chassis_z}", chamfer: "${chassis_chamfer}"}
+  - {pos: "${ chassis_lx / 2}", lx: "${chassis_ly}", ly: "${chassis_lz}", cy: "${chassis_z}", chamfer: "${chassis_chamfer}"}
